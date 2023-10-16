@@ -26,9 +26,20 @@ namespace HotelBooking.Web.Controllers
         [HttpPost]
         public IActionResult Create(Villa obj)
         {
-            _db.Villas.Add(obj);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if(obj.Name==obj.Description)
+            {
+                ModelState.AddModelError("Description","Description and name can not be same.");
+            }
+            if(ModelState.IsValid)
+            {
+                _db.Villas.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(obj);
+            }
         }
     }
 }
