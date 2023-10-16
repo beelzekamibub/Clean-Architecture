@@ -1,4 +1,7 @@
-﻿@using HotelBooking.Domain.Entities;
+﻿@{
+    ViewData["Title"] = "Update Villa";
+}
+@using HotelBooking.Domain.Entities;
 @model Villa;
 
 @{
@@ -51,7 +54,7 @@
 				</div>
 				<div class="row pt-2">
 					<div class="col-6 col-md-3">
-						<button type="submit" class="btn btn-success w-100"><i class="bi bi-check-circle"></i> Create</button>
+						<button type="submit" class="btn btn-warning w-100"><i class="bi bi-check-circle"></i> Update</button>
 					</div>
 					<div class="col-6 col-md-3">
 						<a asp-controller="Villa" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>

@@ -34,12 +34,31 @@ namespace HotelBooking.Web.Controllers
             {
                 _db.Villas.Add(obj);
                 _db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Villa");
             }
             else
             {
                 return View(obj);
             }
         }
-    }
+        [HttpGet]
+        public IActionResult Update(int villaId)
+        {
+            Villa? villa = _db.Villas.FirstOrDefault(x => x.Id == villaId);
+            //same as
+            villa = _db.Villas.Find(villaId);
+            if (villa == null)
+            {
+                return RedirectToAction("Error","Home");
+            }
+            return View(villa);
+        }
+
+        [HttpPost]
+        public IActionResult Update(Villa villa)
+        {
+            return RedirectToAction("Index", "Villa");
+        }
+
+	}
 }
