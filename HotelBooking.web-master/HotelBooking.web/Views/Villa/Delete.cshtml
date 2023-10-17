@@ -1,75 +1,72 @@
-﻿@{
-	ViewData["Title"] = "Delete Villa";
-}
-@using HotelBooking.Domain.Entities;
+﻿@using HotelBooking.Domain.Entities;
 @model Villa;
-
-@{
-	ViewData["Title"] = "Add Villa";
-}
-
+<style>
+    .required::after {
+        content: "*";
+        font-weight: bold;
+        color: red;
+    }
+</style>
 <div class="w-100 card border-0 p-4">
-	<div class="card-header border ml-0 py-3">
-		<div class="row">
-			<div class="col-12 text-center">
-				<h2 class="text-dark py-2">
-					Create Villa
-				</h2>
-			</div>
-		</div>
-	</div>
-	<div class="card-body border p-4">
-		<form method="post" class="row">
-			<input hidden asp-for="@Model.Id" />
-			<div class="p-3">
-				<div asp-validation-Summary="All" class="text-danger"></div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.Name" class="form-control border shadow" />
-					<label asp-for="Name" class=""></label>
-					<span asp-validation-for="Name" class="text-danger ms-3"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.Description" class="form-control border shadow" />
-					<label asp-for="Description" class=""></label>
-					<span asp-validation-for="Description" class="text-danger ms-3"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.Price" class="form-control border shadow" />
-					<label asp-for="Price" class=""></label>
-					<span asp-validation-for="Price" class="text-danger ms-3"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.Sqft" class="form-control border shadow" />
-					<label asp-for="Sqft" class=""></label>
-					<span asp-validation-for="Sqft" class="text-danger ms-3"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.Occupancy" class="form-control border shadow" />
-					<label asp-for="Occupancy" class=""></label>
-					<span asp-validation-for="Occupancy" class="text-danger ms-3"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.ImageUrl" class="form-control border shadow" />
-					<label asp-for="ImageUrl" class=""></label>
-					<span asp-validation-for="ImageUrl" class="text-danger ms-3"></span>
-				</div>
-				<div class="row pt-2">
-					<div class="col-6 col-md-6"></div>
-					<div class="col-6 col-md-3">
-						<button type="submit" class="btn btn-warning w-100"><i class="bi bi-trash-fill"></i> Delete</button>
-					</div>
-					<div class="col-6 col-md-3">
-						<a asp-controller="Villa" asp-action="Index" class="btn btn-danger w-100"><i class="bi bi-x-circle"></i> Cancel</a>
-					</div>
-				</div>
-			</div>
-		</form>
-	</div>
+    <div class="card-header border ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-dark py-2">
+                    Update Villa
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body border p-4">
+
+        <form method="post" class="row">
+            <input asp-for="Id" hidden />
+            <div class="p-3">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.Name" disabled class="form-control border shadow" />
+                    <label asp-for="Name" class="required"></label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.Description" disabled class="form-control border shadow" />
+                    <label asp-for="Description" class="required"></label>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.Price" disabled class="form-control border shadow" />
+                    <label asp-for="Price" class="required"></label>
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.Sqft" disabled class="form-control border shadow" />
+                    <label asp-for="Sqft" class="required"></label>
+                    <span asp-validation-for="Sqft" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.Occupancy" disabled class="form-control border shadow" />
+                    <label asp-for="Occupancy" class="required"></label>
+                    <span asp-validation-for="Occupancy" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="@Model.ImageUrl" disabled class="form-control border shadow" />
+                    <label asp-for="ImageUrl" class="required"></label>
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-md-6"></div>
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure want to delete this record?');"><i class="bi bi-trash-fill"></i> Delete</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Villa" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
-
 @section Scripts{
-	@{
-		<partial name="_ValidationScriptsPartial"> </partial>
-	}
-}
+    <partial name="_ValidationScriptsPartial" />
+                    }

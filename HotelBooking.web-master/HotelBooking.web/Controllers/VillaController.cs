@@ -29,16 +29,19 @@ namespace HotelBooking.Web.Controllers
         {
             if(obj.Name==obj.Description)
             {
+
                 ModelState.AddModelError("Description","Description and name can not be same.");
             }
             if(ModelState.IsValid)
             {
                 _db.Villas.Add(obj);
                 _db.SaveChanges();
+                TempData["success"] = "Villa was created.";
                 return RedirectToAction("Index","Villa");
             }
             else
             {
+                TempData["error"] = "Villa could not be added.";
                 return View(obj);
             }
         }
@@ -50,6 +53,7 @@ namespace HotelBooking.Web.Controllers
             villa = _db.Villas.Find(villaId);
             if (villa == null)
             {
+                TempData["error"] = "Villa was not found.";
                 return RedirectToAction("Error","Home");
             }
             return View(villa);
@@ -62,11 +66,13 @@ namespace HotelBooking.Web.Controllers
 			{
 				_db.Villas.Update(obj);
 				_db.SaveChanges();
-				return RedirectToAction("Index", "Villa");
+                TempData["success"] = "Villa was updated.";
+                return RedirectToAction("Index", "Villa");
 			}
 			else
 			{
-				return View(obj);
+                TempData["error"] = "Villa was not found.";
+                return View(obj);
 			}
 		}
         [HttpGet]
@@ -75,6 +81,7 @@ namespace HotelBooking.Web.Controllers
             Villa? villa=_db.Villas.FirstOrDefault(x=>x.Id== villaId);
             if(villa!=null)
                 return View(villa);
+            TempData["error"] = "Villa was not found.";
             return RedirectToAction("Error", "Home");
         }
         [HttpPost]
@@ -83,8 +90,10 @@ namespace HotelBooking.Web.Controllers
             var AlteredRows=_db.Villas.Where(x=>x.Id== villa.Id).ExecuteDelete();
             if (AlteredRows == 0)
             {
+                TempData["error"] = "Villa was not deleted.";
                 return RedirectToAction("Error", "Home");
             }
+            TempData["success"] = "Villa was deleted.";
             return RedirectToAction("Index");
         }
 	}
