@@ -11,14 +11,15 @@ namespace HotelBooking.Domain.Entities
     public class Villa
     {
         public int Id { get; set; }
+
         [DisplayName("Villa Name")]
         [Required(ErrorMessage = "{0} is Required")]
-        [MaxLength(10)]
+        [MaxLength(50)]
         [MinLength(3)]
         public string Name { get; set; }
         public string? Description { get; set; }
         [DisplayName("Price per night")]
-        [Range(500, 100000)]
+        [Range(10, 100000)]
         public double Price { get; set; }
         public int Sqft { get; set; }
         [Range(1,10)]

@@ -41,7 +41,8 @@ namespace HotelBooking.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Occupancy")
                         .HasColumnType("int");
@@ -90,6 +91,97 @@ namespace HotelBooking.Infrastructure.Migrations
                             Price = 400.0,
                             Sqft = 750
                         });
+                });
+
+            modelBuilder.Entity("HotelBooking.Domain.Entities.VillaNumber", b =>
+                {
+                    b.Property<int>("Villa_Number")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VillaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Villa_Number");
+
+                    b.HasIndex("VillaId");
+
+                    b.ToTable("VillaNumbers");
+
+                    b.HasData(
+                        new
+                        {
+                            Villa_Number = 101,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 102,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 103,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 104,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 201,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 202,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 203,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 204,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 301,
+                            VillaId = 3
+                        },
+                        new
+                        {
+                            Villa_Number = 302,
+                            VillaId = 3
+                        },
+                        new
+                        {
+                            Villa_Number = 303,
+                            VillaId = 3
+                        },
+                        new
+                        {
+                            Villa_Number = 304,
+                            VillaId = 3
+                        });
+                });
+
+            modelBuilder.Entity("HotelBooking.Domain.Entities.VillaNumber", b =>
+                {
+                    b.HasOne("HotelBooking.Domain.Entities.Villa", "Villa")
+                        .WithMany()
+                        .HasForeignKey("VillaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Villa");
                 });
 #pragma warning restore 612, 618
         }
