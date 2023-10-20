@@ -37,7 +37,7 @@ namespace HotelBooking.Web.Controllers
                 _db.Villas.Add(obj);
                 _db.SaveChanges();
                 TempData["success"] = "Villa was created.";
-                return RedirectToAction("Index","Villa");
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -67,7 +67,7 @@ namespace HotelBooking.Web.Controllers
 				_db.Villas.Update(obj);
 				_db.SaveChanges();
                 TempData["success"] = "Villa was updated.";
-                return RedirectToAction("Index", "Villa");
+                return RedirectToAction(nameof(Index));
 			}
 			else
 			{
@@ -94,7 +94,7 @@ namespace HotelBooking.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
             TempData["success"] = "Villa was deleted.";
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 	}
 }
