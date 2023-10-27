@@ -1,4 +1,6 @@
-﻿using HotelBooking.web.Models;
+﻿using HotelBooking.Application.SharedInterfaces;
+using HotelBooking.web.Models;
+using HotelBooking.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,18 +8,20 @@ namespace HotelBooking.web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IRepositoryService _repo;
+        public HomeController(IRepositoryService repo)
         {
-            _logger = logger;
+            _repo = repo;            
         }
-
         public IActionResult Index()
         {
-            return View();
+            HomeVM homeVM = new HomeVM() {
+                Villas = _repo.Villa.GetAllByFilter(includeJoinsOn: "Amenities"),
+                Nights=1,
+                CheckInDate=DateTime.Now,
+            };
+            return View(homeVM);
         }
-
         public IActionResult Privacy()
         {
             return View();
