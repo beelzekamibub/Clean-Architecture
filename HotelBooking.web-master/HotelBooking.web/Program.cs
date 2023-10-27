@@ -1,4 +1,5 @@
 using HotelBooking.Application.SharedInterfaces;
+using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
 using HotelBooking.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(option=>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddTransient<IVillaRepository,VillaRepository>();//bhrugen did scoped 
+builder.Services.AddTransient<IRepositoryService,RepositoryService>();//bhrugen did scoped 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

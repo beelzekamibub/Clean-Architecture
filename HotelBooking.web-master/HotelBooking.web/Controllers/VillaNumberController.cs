@@ -1,4 +1,5 @@
-﻿using HotelBooking.Domain.Entities;
+﻿using HotelBooking.Application.SharedInterfaces;
+using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
 using HotelBooking.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,20 +10,21 @@ namespace HotelBooking.Web.Controllers
 {
 	public class VillaNumberController : Controller
 	{
-		private readonly ApplicationDbContext _db;
-		public VillaNumberController(ApplicationDbContext context)
+		
+		private readonly IRepositoryService _repo;
+		public VillaNumberController(IRepositoryService repo)
 		{
-			_db = context;
+			_repo=repo;
 		}
 		public IActionResult Index()
 		{
-			var villaNumbers = _db.VillaNumbers.Include(x=>x.Villa).ToList();
+			var villaNumbers = _repo.VillaNumber.GetAllByFilter(null,includeJoinsOn:"Villa");
 			return View(villaNumbers);
 		}
 
 		public IActionResult Create()
 		{
-			IEnumerable<SelectListItem> VillasSelect = _db.Villas.ToList().Select(x=>new SelectListItem
+			IEnumerable<SelectListItem> VillasSelect = _repo.Villa.GetAllByFilter().Select(x=>new SelectListItem
 			{
 				Text= x.Name,
 				Value=x.Id.ToString(),
@@ -37,10 +39,11 @@ namespace HotelBooking.Web.Controllers
 		{
 			ModelState.Remove("VillaList");
 			ModelState.Remove("VillaNumber.Villa");
-			if (_db.VillaNumbers.Any(x => x.Villa_Number == obj.VillaNumber.Villa_Number))
+			IEnumerable<VillaNumber> vns=_repo.VillaNumber.GetAllByFilter(x => x.Villa_Number == obj.VillaNumber.Villa_Number);
+			if (vns.Count()>=1)
 			{ 
 				TempData["error"] = "This Villa Number Already exists.";
-				obj.VillaList= _db.Villas.ToList().Select(x => new SelectListItem
+				obj.VillaList= _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -50,14 +53,14 @@ namespace HotelBooking.Web.Controllers
 
             if (ModelState.IsValid)
 			{
-				_db.VillaNumbers.Add(obj.VillaNumber);
-				_db.SaveChanges();
+				_repo.VillaNumber.Add(obj.VillaNumber);
+				_repo.VillaNumber.Save();
 				TempData["success"] = "Villa Number was created.";
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
-                obj.VillaList = _db.Villas.ToList().Select(x => new SelectListItem
+                obj.VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -69,15 +72,16 @@ namespace HotelBooking.Web.Controllers
 		[HttpGet]
 		public IActionResult Update(int villaNumberId)
 		{
-			if (!_db.VillaNumbers.Any(x => x.Villa_Number == villaNumberId))
+			IEnumerable<VillaNumber> vns=_repo.VillaNumber.GetAllByFilter(x => x.Villa_Number == villaNumberId);
+			if (vns.Count()==0)
 			{
 				TempData["error"] = "Could not find data for this villa room number";
 				return RedirectToAction("Error", "Home");
 			}
 			VillaNumberVM villaNumberVM = new()
 			{
-				VillaList = _db.Villas.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-				VillaNumber = _db.VillaNumbers.FirstOrDefault(x=>x.Villa_Number == villaNumberId)
+				VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+				VillaNumber = _repo.VillaNumber.GetByFilter(x=>x.Villa_Number == villaNumberId)
             };
 			return View(villaNumberVM);
 		}
@@ -89,14 +93,14 @@ namespace HotelBooking.Web.Controllers
             ModelState.Remove("VillaNumber.Villa");
             if (ModelState.IsValid)
             {
-                _db.VillaNumbers.Update(obj.VillaNumber);
-                _db.SaveChanges();
+                _repo.VillaNumber.Update(obj.VillaNumber);
+                _repo.VillaNumber.Save();
                 TempData["success"] = "Villa Number was Updated.";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                obj.VillaList = _db.Villas.ToList().Select(x => new SelectListItem
+                obj.VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -108,28 +112,25 @@ namespace HotelBooking.Web.Controllers
         [HttpGet]
         public IActionResult Delete(int villaNumberId)
         {
-            if (!_db.VillaNumbers.Any(x => x.Villa_Number == villaNumberId))
-            {
-                TempData["error"] = "Could not find data for this villa room number";
+			IEnumerable<VillaNumber> vns = _repo.VillaNumber.GetAllByFilter(x => x.Villa_Number == villaNumberId);
+			if (vns.Count() == 0)
+			{
+				TempData["error"] = "Could not find data for this villa room number";
                 return RedirectToAction("Error", "Home");
             }
             VillaNumberVM villaNumberVM = new()
             {
-                VillaList = _db.Villas.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-                VillaNumber = _db.VillaNumbers.FirstOrDefault(x => x.Villa_Number == villaNumberId)
+                VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+                VillaNumber = _repo.VillaNumber.GetByFilter(x => x.Villa_Number == villaNumberId)
             };
             return View(villaNumberVM);
         }
         [HttpPost]
 		public IActionResult Delete(VillaNumberVM villaNumberVM)
 		{
-			var AlteredRows = _db.VillaNumbers.Where(x => x.Villa_Number == villaNumberVM.VillaNumber.Villa_Number).ExecuteDelete();
-			if (AlteredRows == 0)
-			{
-				TempData["error"] = "Villa was not deleted.";
-				return RedirectToAction("Error", "Home");
-			}
-			TempData["success"] = "Villa was deleted.";
+			_repo.VillaNumber.Remove(villaNumberVM.VillaNumber);
+			_repo.VillaNumber.Save();
+			TempData["success"] = "Villa Number was deleted.";
 			return RedirectToAction(nameof(Index));
 		}
 	}

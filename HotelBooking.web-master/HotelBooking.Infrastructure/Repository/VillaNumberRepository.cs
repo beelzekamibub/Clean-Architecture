@@ -1,30 +1,28 @@
 ﻿using HotelBooking.Application.SharedInterfaces;
 using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HotelBooking.Infrastructure.Repository
 {
-	public class VillaRepository : GenericRepository<Villa>, IVillaRepository
+	public class VillaNumberRepository : GenericRepository<VillaNumber>, IVillaNumberRepository
 	{
-		private readonly ApplicationDbContext _db;
-        public VillaRepository(ApplicationDbContext db):base(db)
+		ApplicationDbContext _db;
+        public VillaNumberRepository(ApplicationDbContext db):base(db)
         {
 			_db = db;
         }
-		public void Save()
+        public void Save()
 		{
 			_db.SaveChanges();
 		}
-		public void Update(Villa villa)
+		public void Update(VillaNumber villaNumber)
 		{
-			_db.Villas.Update(villa);
+			_db.VillaNumbers.Update(villaNumber);
 		}
 	}
 }

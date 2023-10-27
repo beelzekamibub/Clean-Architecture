@@ -23,49 +23,55 @@
 	</div>
 	<div class="card-body border p-4">
 
-		<form method="post" class="row">
-			<input asp-for="Id" hidden />
-			<div class="p-3">
-				<div asp-validation-summary="ModelOnly"></div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.Name" disabled class="form-control border shadow" />
-					<label asp-for="Name" class="required"></label>
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.Description" disabled class="form-control border shadow" />
-					<label asp-for="Description" class="required"></label>
-					<span asp-validation-for="Description" class="text-danger"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.Price" disabled class="form-control border shadow" />
-					<label asp-for="Price" class="required"></label>
-					<span asp-validation-for="Price" class="text-danger"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.Sqft" disabled class="form-control border shadow" />
-					<label asp-for="Sqft" class="required"></label>
-					<span asp-validation-for="Sqft" class="text-danger"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.Occupancy" disabled class="form-control border shadow" />
-					<label asp-for="Occupancy" class="required"></label>
-					<span asp-validation-for="Occupancy" class="text-danger"></span>
-				</div>
-				<div class="form-floating py-1 col-12">
-					<input asp-for="@Model.ImageUrl" disabled class="form-control border shadow" />
-					<label asp-for="ImageUrl" class="required"></label>
-					<span asp-validation-for="ImageUrl" class="text-danger"></span>
-				</div>
-				<div class="row pt-2">
-					<div class="col-md-6"></div>
-					<div class="col-6 col-md-3">
-						<button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure want to delete this record?');"><i class="bi bi-trash-fill"></i> Delete</button>
+		<form method="post" class="row" enctype="multipart/form-data">
+			<div class="col-8">
+				<input asp-for="Id" hidden />
+				<div class="p-3">
+					<div asp-validation-summary="ModelOnly"></div>
+					<div class="form-floating py-1 col-12">
+						<input asp-for="@Model.Name" disabled class="form-control border shadow" />
+						<label asp-for="Name" class="required"></label>
+						<span asp-validation-for="Name" class="text-danger"></span>
 					</div>
-					<div class="col-6 col-md-3">
-						<a asp-controller="Villa" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>
+					<div class="form-floating py-1 col-12">
+						<input asp-for="@Model.Description" disabled class="form-control border shadow" />
+						<label asp-for="Description" class="required"></label>
+						<span asp-validation-for="Description" class="text-danger"></span>
+					</div>
+					<div class="form-floating py-1 col-12">
+						<input asp-for="@Model.Price" disabled class="form-control border shadow" />
+						<label asp-for="Price" class="required"></label>
+						<span asp-validation-for="Price" class="text-danger"></span>
+					</div>
+					<div class="form-floating py-1 col-12">
+						<input asp-for="@Model.Sqft" disabled class="form-control border shadow" />
+						<label asp-for="Sqft" class="required"></label>
+						<span asp-validation-for="Sqft" class="text-danger"></span>
+					</div>
+					<div class="form-floating py-1 col-12">
+						<input asp-for="@Model.Occupancy" disabled class="form-control border shadow" />
+						<label asp-for="Occupancy" class="required"></label>
+						<span asp-validation-for="Occupancy" class="text-danger"></span>
+					</div>
+					<div class="form-floating py-2 col-12">
+						<input hidden asp-for="@Model.ImageUrl" class="form-control border shadow custom-height" />
+						@* <input asp-for="@Model.Image" class="form-control border shadow custom-height" /> *@
+						@* <label asp-for="Image"></label>
+						<span asp-validation-for="Image" class="text-danger"></span> *@
+					</div>
+					<div class="row pt-2">
+						<div class="col-md-6"></div>
+						<div class="col-6 col-md-3">
+							<button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure want to delete this record?');"><i class="bi bi-trash-fill"></i> Delete</button>
+						</div>
+						<div class="col-6 col-md-3">
+							<a asp-controller="Villa" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>
+						</div>
 					</div>
 				</div>
+			</div>
+			<div class="col-4 p-3">
+				<img src="@Model.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
 			</div>
 		</form>
 	</div>
