@@ -1,6 +1,6 @@
-﻿@model VillaNumberVM;
+﻿@model AmenityVM;
 @{
-	ViewData["Title"] = "Delete Villa Number";
+	ViewData["Title"] = "Delete Amenity";
 }
 
 <style>
@@ -15,7 +15,7 @@
 		<div class="row">
 			<div class="col-12 text-center">
 				<h2 class="text-dark py-2">
-					Delete Villa Number
+					Delete Amenity
 				</h2>
 			</div>
 		</div>
@@ -23,25 +23,25 @@
 	<div class="card-body border p-4">
 		<form method="post" class="row">
 			<div class="col-2"></div>
-			<input hidden asp-for="@Model.VillaNumber.Villa_Number" />
+			<input hidden asp-for="@Model.Amenity.AmenityId" />
 			<div class="p-3 col-8">
 				<div asp-validation-summary="ModelOnly"></div>
 				<div class="form-floating py-1 col-12">
-					<select disabled asp-for="@Model.VillaNumber.VillaId" class="form-select border shadow" asp-items="@Model.VillaList">
+					<select disabled asp-for="@Model.Amenity.VillaId" class="form-select border shadow" asp-items="@Model.VillaList">
 						<option disabled selected>--Select VIlla--</option>
 					</select>
-					<label asp-for="@Model.VillaNumber.VillaId" class="required"></label>
-					<span asp-validation-for="@Model.VillaNumber.VillaId" class="text-danger"></span>
+					<label asp-for="@Model.Amenity.VillaId" class="required"></label>
+					<span asp-validation-for="@Model.Amenity.VillaId" class="text-danger"></span>
 				</div>
 				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.VillaNumber.Villa_Number" class="form-control border shadow" />
-					<label asp-for="VillaNumber.Villa_Number" class="required"></label>
-					<span asp-validation-for="VillaNumber.Villa_Number" class="text-danger"></span>
+					<input disabled asp-for="@Model.Amenity.Name" class="form-control border shadow" />
+					<label asp-for="Amenity.Name" class="required"></label>
+					<span asp-validation-for="Amenity.Name" class="text-danger"></span>
 				</div>
 				<div class="form-floating py-1 col-12">
-					<input disabled asp-for="@Model.VillaNumber.SpecialDetails" class="form-control border shadow" />
-					<label asp-for="VillaNumber.SpecialDetails" class="required"></label>
-					<span asp-validation-for="VillaNumber.SpecialDetails" class="text-danger"></span>
+					<input disabled asp-for="@Model.Amenity.Description" class="form-control border shadow" />
+					<label asp-for="Amenity.Description" class="required"></label>
+					<span asp-validation-for="Amenity.Description" class="text-danger"></span>
 				</div>
 				<div class="row pt-2">
 					<div class="col-md-6"></div>
@@ -52,7 +52,7 @@
 						</button>
 					</div>
 					<div class="col-6 col-md-3">
-						<a asp-controller="VillaNumber" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>
+						<a asp-controller="Amenity" asp-action="Index" class="btn btn-secondary w-100"><i class="bi bi-x-circle"></i> Cancel</a>
 					</div>
 				</div>
 			</div>

@@ -20,9 +20,9 @@ namespace HotelBooking.Infrastructure.Repository
 		{
 			_db.SaveChanges();
 		}
-		public void Update(VillaNumber villaNumber)
+		public void Update(Amenity amenity)
 		{
-			_db.VillaNumbers.Update(villaNumber);
+			_db.Amenities.Update(amenity);
 		}
 	}
 }
