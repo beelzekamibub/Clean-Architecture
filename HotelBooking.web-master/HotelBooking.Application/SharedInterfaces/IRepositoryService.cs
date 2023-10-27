@@ -8,7 +8,8 @@ namespace HotelBooking.Application.SharedInterfaces
 {
 	public interface IRepositoryService
 	{
-		IVillaNumberRepository VillaNumber{ get; set; }
-        IVillaRepository Villa { get; set; }
+		IVillaNumberRepository VillaNumber{ get;}
+        IVillaRepository Villa { get; }
+        IAmenityRepository Amenity { get;}
     }
 }

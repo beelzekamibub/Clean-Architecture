@@ -17,6 +17,7 @@ namespace HotelBooking.Infrastructure.Data
 
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillaNumbers { get; set; }
+        public DbSet<Amenity> Amenities{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -113,6 +114,22 @@ namespace HotelBooking.Infrastructure.Data
 					Villa_Number = 304,
 					VillaId = 3
 				}
+			);
+			modelBuilder.Entity<Amenity>().HasData(
+				new Amenity { Name ="AC",Description="Fully Air Conditioned", AmenityId=1,VillaId=1},
+				new Amenity { Name ="Wifi",Description="Unlimited Wifi", AmenityId=2,VillaId=1},
+				new Amenity { Name ="Jaccuzi", AmenityId=3,VillaId=1},
+				new Amenity { Name ="Swimming Pool", AmenityId=4,VillaId=1},
+
+				new Amenity { Name ="AC",Description="Fully Air Conditioned", AmenityId=5,VillaId=9},
+				new Amenity { Name ="Wifi",Description="Unlimited Wifi", AmenityId=6,VillaId=9},
+				new Amenity { Name ="Jaccuzi", AmenityId=7,VillaId=9},
+				new Amenity { Name ="Swimming Pool", AmenityId=8,VillaId=9},
+
+				new Amenity { Name ="AC",Description="Fully Air Conditioned", AmenityId=9,VillaId=10},
+				new Amenity { Name ="Wifi",Description="Unlimited Wifi", AmenityId=10,VillaId=10},
+				new Amenity { Name ="Jaccuzi", AmenityId=11,VillaId=10},
+				new Amenity { Name ="Swimming Pool", AmenityId=12,VillaId=10}
 			);
 		}
     }
