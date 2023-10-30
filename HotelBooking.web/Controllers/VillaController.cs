@@ -15,9 +15,9 @@ namespace HotelBooking.Web.Controllers
             _repo = repo;
             _environment = environment;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var villa = _repo.Villa.GetAllByFilter();
+            var villa = await _repo.Villa.GetAllByFilter();
             return View(villa);
         }
         public IActionResult Create()
@@ -25,7 +25,7 @@ namespace HotelBooking.Web.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Villa obj)
+        public async Task<IActionResult> Create(Villa obj)
         {
             if(obj.Name==obj.Description)
             {
@@ -49,8 +49,8 @@ namespace HotelBooking.Web.Controllers
                     obj.ImageUrl = "https://placehold.co/600x400";
                 }
 
-				_repo.Villa.Add(obj);
-                _repo.Villa.Save();
+				await _repo.Villa.Add(obj);
+                await _repo.Villa.Save();
                 TempData["success"] = "Villa was created.";
                 return RedirectToAction(nameof(Index));
             }
@@ -61,11 +61,11 @@ namespace HotelBooking.Web.Controllers
             }
         }
         [HttpGet]
-        public IActionResult Update(int villaId)
+        public async Task<IActionResult> Update(int villaId)
         {
-            Villa? villa = _repo.Villa.GetByFilter(x => x.Id == villaId);
+            Villa? villa =await _repo.Villa.GetByFilter(x => x.Id == villaId);
             //same as
-            villa = _repo.Villa.GetByFilter(x=>x.Id==villaId);
+            villa = await _repo.Villa.GetByFilter(x => x.Id == villaId);
             if (villa == null)
             {
                 TempData["error"] = "Villa was not found.";
@@ -75,7 +75,7 @@ namespace HotelBooking.Web.Controllers
         }
 
 		[HttpPost]
-		public IActionResult Update(Villa obj)
+		public async Task<IActionResult> Update(Villa obj)
 		{
 			if (ModelState.IsValid)
 			{
@@ -100,7 +100,7 @@ namespace HotelBooking.Web.Controllers
                 }
                 
                 _repo.Villa.Update(obj);
-                _repo.Villa.Save();
+                await _repo.Villa.Save();
                 TempData["success"] = "Villa was updated.";
                 return RedirectToAction(nameof(Index));
 			}
@@ -111,16 +111,16 @@ namespace HotelBooking.Web.Controllers
 			}
 		}
         [HttpGet]
-        public IActionResult Delete(int villaId)
+        public async Task<IActionResult> Delete(int villaId)
         {
-            Villa? villa=_repo.Villa.GetByFilter(x=>x.Id== villaId);
+            Villa? villa=await _repo.Villa.GetByFilter(x=>x.Id== villaId);
             if(villa!=null)
                 return View(villa);
             TempData["error"] = "Villa was not found.";
             return RedirectToAction("Error", "Home");
         }
         [HttpPost]
-        public IActionResult Delete(Villa villa)
+        public async Task<IActionResult> Delete(Villa villa)
         {
 			if (!string.IsNullOrEmpty(villa.ImageUrl))
 			{
@@ -131,7 +131,7 @@ namespace HotelBooking.Web.Controllers
 				}
 			}
 			_repo.Villa.Remove(villa);
-            _repo.Villa.Save();
+            await _repo.Villa.Save();
             TempData["success"] = "Villa was deleted.";
             return RedirectToAction(nameof(Index));
         }

@@ -16,15 +16,17 @@ namespace HotelBooking.Web.Controllers
 		{
 			_repo=repo;
 		}
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			var amenities = _repo.Amenity.GetAllByFilter(null,includeJoinsOn:"Villa");
+			var amenities = await _repo.Amenity.GetAllByFilter(null, includeJoinsOn: "Villa");
 			return View(amenities);
 		}
 
-		public IActionResult Create()
+		public async Task<IActionResult> Create()
 		{
-			IEnumerable<SelectListItem> VillasSelect = _repo.Villa.GetAllByFilter().Select(x=>new SelectListItem
+			var l = await _repo.Villa.GetAllByFilter();
+
+            IEnumerable<SelectListItem> VillasSelect = l.Select(x=>new SelectListItem
 			{
 				Text= x.Name,
 				Value=x.Id.ToString(),
@@ -35,32 +37,22 @@ namespace HotelBooking.Web.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Create(AmenityVM obj)
+		public async Task<IActionResult> Create(AmenityVM obj)
 		{
 			ModelState.Remove("VillaList");
 			ModelState.Remove("Amenity.Villa");
 
-/*			if (_repo.Amenity.Any(x=>x.AmenityId==obj.Amenity.AmenityId))
-			{ 
-				TempData["error"] = "This Amenity Already exists.";
-				obj.VillaList= _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString(),
-                });
-                return View(obj);
-            }*/
-
             if (ModelState.IsValid)
 			{
-				_repo.Amenity.Add(obj.Amenity);
-				_repo.Amenity.Save();
+				await _repo.Amenity.Add(obj.Amenity);
+				await _repo.Amenity.Save();
 				TempData["success"] = "Amenity was added successfully.";
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
-                obj.VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
+				var l = await _repo.Villa.GetAllByFilter();
+                obj.VillaList = l.ToList().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -70,37 +62,40 @@ namespace HotelBooking.Web.Controllers
 			}
 		}
 		[HttpGet]
-		public IActionResult Update(int amenityId)
+		public async Task<IActionResult> Update(int amenityId)
 		{
-			IEnumerable<Amenity> vns=_repo.Amenity.GetAllByFilter(x => x.AmenityId == amenityId);
+			IEnumerable<Amenity> vns=await _repo.Amenity.GetAllByFilter(x => x.AmenityId == amenityId);
 			if (vns.Count()==0)
 			{
 				TempData["error"] = "Could not find data for this Amenity";
 				return RedirectToAction("Error", "Home");
 			}
-			AmenityVM amenityVM = new()
+			var l =await _repo.Villa.GetAllByFilter();
+
+            AmenityVM amenityVM = new()
 			{
-				VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-				Amenity = _repo.Amenity.GetByFilter(x=>x.AmenityId == amenityId)
+				VillaList = l.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+				Amenity = await _repo.Amenity.GetByFilter(x => x.AmenityId == amenityId)
             };
 			return View(amenityVM);
 		}
 
 		[HttpPost]
-		public IActionResult Update(AmenityVM obj)
+		public async Task<IActionResult> Update(AmenityVM obj)
 		{
             ModelState.Remove("VillaList");
             ModelState.Remove("Amenity.Villa");
             if (ModelState.IsValid)
             {
                 _repo.Amenity.Update(obj.Amenity);
-                _repo.Amenity.Save();
+                await _repo.Amenity.Save();
                 TempData["success"] = "Amenity was Updated.";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                obj.VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem
+				var l = await _repo.Villa.GetAllByFilter();
+                obj.VillaList = l.ToList().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -110,26 +105,27 @@ namespace HotelBooking.Web.Controllers
             }
         }
         [HttpGet]
-        public IActionResult Delete(int amenityId)
+        public async Task<IActionResult> Delete(int amenityId)
         {
-			IEnumerable<Amenity> vns = _repo.Amenity.GetAllByFilter(x => x.AmenityId == amenityId);
+			IEnumerable<Amenity> vns = await _repo.Amenity.GetAllByFilter(x => x.AmenityId == amenityId);
 			if (vns.Count() == 0)
 			{
 				TempData["error"] = "Could not find data for this Amenity";
                 return RedirectToAction("Error", "Home");
             }
+			var l = await _repo.Villa.GetAllByFilter();
             AmenityVM amenityVM = new()
             {
-                VillaList = _repo.Villa.GetAllByFilter().ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-                Amenity = _repo.Amenity.GetByFilter(x => x.AmenityId == amenityId)
+                VillaList = l.ToList().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+                Amenity = await _repo.Amenity.GetByFilter(x => x.AmenityId == amenityId)
             };
             return View(amenityVM);
         }
         [HttpPost]
-		public IActionResult Delete(AmenityVM amenityVM)
+		public async Task<IActionResult> Delete(AmenityVM amenityVM)
 		{
 			_repo.Amenity.Remove(amenityVM.Amenity);
-			_repo.Amenity.Save();
+			await _repo.Amenity.Save();
 			TempData["success"] = "Amenity was deleted.";
 			return RedirectToAction(nameof(Index));
 		}

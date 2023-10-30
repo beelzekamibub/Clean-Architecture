@@ -10,6 +10,6 @@ namespace HotelBooking.Application.SharedInterfaces
 	public interface IVillaNumberRepository:IGenericRepository<VillaNumber>
 	{
 		void Update(VillaNumber villaNumber);
-		void Save();
+		Task Save();
 	}
 }

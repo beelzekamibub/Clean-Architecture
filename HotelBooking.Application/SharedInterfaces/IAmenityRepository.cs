@@ -10,6 +10,6 @@ namespace HotelBooking.Application.SharedInterfaces
 	public interface IAmenityRepository:IGenericRepository<Amenity>
 	{
 		void Update(Amenity amenity);
-		void Save();
+		Task Save();
 	}
 }

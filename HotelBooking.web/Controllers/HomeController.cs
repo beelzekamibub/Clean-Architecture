@@ -13,10 +13,10 @@ namespace HotelBooking.web.Controllers
         {
             _repo = repo;            
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             HomeVM homeVM = new HomeVM() {
-                Villas = _repo.Villa.GetAllByFilter(includeJoinsOn: "Amenities"),
+                Villas = await _repo.Villa.GetAllByFilter(includeJoinsOn: "Amenities"),
                 Nights=1,
                 CheckInDate=DateTime.Now,
             };

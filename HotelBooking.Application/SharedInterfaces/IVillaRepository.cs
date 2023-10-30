@@ -18,6 +18,6 @@ namespace HotelBooking.Application.SharedInterfaces
 		void Add(Villa villa);*/
 		void Update(Villa villa);
 		/*void Remove(Villa villa);*/
-		void Save();
+		Task Save();
 	}
 }

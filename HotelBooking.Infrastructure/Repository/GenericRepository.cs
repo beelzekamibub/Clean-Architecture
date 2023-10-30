@@ -19,17 +19,17 @@ namespace HotelBooking.Infrastructure.Repository
 		{
 			dbSet=db.Set<T>();
 		}
-		public void Add(T obj)
+		public async Task Add(T obj)
 		{
-			dbSet.Add(obj);
+			await dbSet.AddAsync(obj);
 		}
 
-		public bool Any(Expression<Func<T, bool>> filter)
+		public async Task<bool> Any(Expression<Func<T, bool>> filter)
 		{
-			return dbSet.Any(filter);
+			return await dbSet.AnyAsync(filter);
 		}
 
-		public IEnumerable<T> GetAllByFilter(Expression<Func<T, bool>>? filter = null, string? includeJoinsOn = null)
+		public async Task<IEnumerable<T>> GetAllByFilter(Expression<Func<T, bool>>? filter = null, string? includeJoinsOn = null)
 		{
 			IQueryable<T> query = dbSet;
 			if (filter != null)
@@ -45,10 +45,10 @@ namespace HotelBooking.Infrastructure.Repository
 					query = query.Include(on);
 				}
 			}
-			return query.ToList();
+			return await query.ToListAsync();
 		}
 
-		public T GetByFilter(Expression<Func<T, bool>> filter, string? includeJoinsOn = null)
+		public async Task<T> GetByFilter(Expression<Func<T, bool>> filter, string? includeJoinsOn = null)
 		{
 			IQueryable<T> query = dbSet;
 			query = query.Where(filter);
@@ -61,13 +61,13 @@ namespace HotelBooking.Infrastructure.Repository
 					query = query.Include(on);
 				}
 			}
-			return query.FirstOrDefault();
+			return await query.FirstOrDefaultAsync();
 		}
 
 		public void Remove(T obj)
 		{
 			dbSet.Attach(obj);
-			dbSet.Remove(obj);
+            dbSet.Remove(obj);
 		}
 	}
 }

@@ -35,8 +35,11 @@ namespace HotelBooking.Web.Controllers
 		}
 		public async Task<IActionResult> Register()
 		{
-			await _roleManager.CreateAsync(new IdentityRole("Admin"));
-			return View();
+			if(!await _roleManager.RoleExistsAsync("Admin"))
+				await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            if (!await _roleManager.RoleExistsAsync("Customer"))
+                await _roleManager.CreateAsync(new IdentityRole("Customer"));
+            return View();
 		}
 	}
 }
