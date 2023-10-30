@@ -33,8 +33,9 @@ namespace HotelBooking.Web.Controllers
 			};
 			return View(loginVM);
 		}
-		public IActionResult Register()
+		public async Task<IActionResult> Register()
 		{
+			await _roleManager.CreateAsync(new IdentityRole("Admin"));
 			return View();
 		}
 	}

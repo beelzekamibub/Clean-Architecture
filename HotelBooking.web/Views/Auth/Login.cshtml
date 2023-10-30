@@ -1,4 +1,4 @@
-﻿@model LoginVM;
+﻿@model LoginVM
 @{
     ViewData["Title"] = "Login";
 }
@@ -8,52 +8,62 @@
         font-weight: bold;
         color: red;
     }
-</style>
-<div class="container pt-5">
-    <div class="card shadow border">
-        <div class="card-header bg-gradient ml-0 py-4">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="py-2 text-black">Login</h2>
-                </div>
-            </div>
-        </div>
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <section>
-                        <form method="post">
-                            <div asp-asp-validation-summary="All" class="text-danger"></div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="Email" class="form-control" aria-required="true" />
-                                <label asp-for="Email" class="form-label required"></label>
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input asp-for="Password" class="form-control" aria-required="true" />
-                                <label asp-for="Password" class="form-label required"></label>
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            <div class="checkbox mb-3">
-                                <input asp-for="RemeberMe" class="form-check-input" />
-                                <label asp-for="RemeberMe" class="form-label required"></label>
-                                <span asp-validation-for="RemeberMe" class="text-danger"></span>
-                            </div>
-                            <div>
-                                <button type="submit" class="w-100 btn btn-lg btn-outline-success">Log in</button>
-                            </div>
-                            <div class="d-flex justify-content-between pt-2">
-                                <p>
-                                    <a>Forgot your password?</a>
-                                </p>
-                                <p>
-                                    <a>Register as a new user</a>
-                                </p>
-                            </div>
-                        </form>
-                    </section>
-                </div>.
 
+    .flexcontainer {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="flexcontainer">
+    <div class="col-6">
+        <div class="container pt-5">
+            <div class="card shadow border">
+                <div class="card-header bg-gradient ml-0 py-4">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h2 class="py-2 text-black">Login</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <section>
+                                <form method="post">
+                                    <div asp-asp-validation-summary="All" class="text-danger"></div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="@Model.Email" class="form-control" aria-required="true" />
+                                        <label asp-for="Email" class="form-label required"></label>
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Password" class="form-control" aria-required="true" />
+                                        <label asp-for="Password" class="form-label required"></label>
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox mb-3">
+                                        <input asp-for="RemeberMe" class="form-check-input" />
+                                        <label asp-for="RemeberMe" class="form-label required"></label>
+                                        <span asp-validation-for="RemeberMe" class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="w-100 btn btn-lg btn-outline-success">Log in</button>
+                                    </div>
+                                    <div class="d-flex justify-content-between pt-2">
+                                        <p>
+                                            <a>Forgot your password?</a>
+                                        </p>
+                                        <p>
+                                            <a>Register as a new user.</a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </section>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
