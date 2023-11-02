@@ -1,3 +1,4 @@
+using HotelBooking.Application.Services;
 using HotelBooking.Application.SharedInterfaces;
 using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
@@ -18,6 +19,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddTransient<IRepositoryService,RepositoryService>();//bhrugen did scoped 
+builder.Services.AddTransient<IEmailService,EmailService>();//bhrugen did scoped 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

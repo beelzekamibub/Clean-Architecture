@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace HotelBooking.Web.ViewModels
 {
@@ -21,15 +23,20 @@ namespace HotelBooking.Web.ViewModels
         [Required]
         public string Name { get; set; }
 
-		[Required]
+
 		[Display(Name = "User Name")]
-		public string UserName { get; set; }
+		public string? UserName { get; set; }
 
 		[DataType(DataType.PhoneNumber)]
         [Display(Name="Phone Number")]
-        public string? PhoneNumber { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; }
 
         public string? RedirectUrl { get; set; }
 
-	}
+
+        public string? SelectedRole { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem>? Roles{ get; set; }
+    }
 }
