@@ -30,6 +30,12 @@ namespace HotelBooking.Web.Controllers
 			_roleManager = roleManager;
 		}
 
+		public async Task<IActionResult> Logout()
+		{
+			await _signInManager.SignOutAsync();
+			return RedirectToAction("Index","Home");
+		}
+
 		public IActionResult Login(string returnUrl=null)
 		{
 			returnUrl = string.IsNullOrEmpty(returnUrl) ? Url.Content("~/") : returnUrl;
@@ -39,7 +45,46 @@ namespace HotelBooking.Web.Controllers
 			};
 			return View(loginVM);
 		}
-		public async Task<IActionResult> Register()
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginVM loginVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(loginVM.Email);
+				if(!user.EmailConfirmed)
+				{
+					TempData["error"] = "Email not confirmed cant login right now";
+					return View(loginVM);
+				}
+				var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password,loginVM.RemeberMe,lockoutOnFailure:false);
+
+                if (result.Succeeded)
+                {
+					if (string.IsNullOrEmpty(loginVM.RedirectUrl))
+					{
+						return RedirectToAction("Index", "Home");
+					}
+                    else
+                    {
+						return LocalRedirect(loginVM.RedirectUrl);
+                    }
+                }
+				else
+				{
+					ModelState.AddModelError("", "Invalid login attempt.");
+				}
+               
+                TempData["error"] = "Could not login";
+                return View(loginVM);
+            }
+            else
+            {
+                TempData["error"] = "Invalid Details";
+                return View(loginVM);
+            }
+        }
+        public async Task<IActionResult> Register()
 		{
 			if(!await _roleManager.RoleExistsAsync(StaticDetails.RoleAdmin))
 				await _roleManager.CreateAsync(new IdentityRole(StaticDetails.RoleAdmin));
@@ -81,20 +126,23 @@ namespace HotelBooking.Web.Controllers
 					var Id = user.Id;
                     var confirmationLink = Url.Action("ConfirmEmail","Auth",new { userId=Id,token=token},Request.Scheme);
 					await _emailService.SendEmail(confirmationLink,registerVM.Email);
+					if (!string.IsNullOrEmpty(registerVM.SelectedRole))
+						await _userManager.AddToRoleAsync(user, registerVM.SelectedRole);
+					else
+						await _userManager.AddToRoleAsync(user, StaticDetails.RoleCustomer);
 					TempData["success"] = "Registered please confirm your email, by clicking on the link emailed to you.";
 					return RedirectToAction("Login");
                 }
+				foreach(var error in result.Errors)
+				{
+					ModelState.AddModelError("", error.Description);
+				}
 				TempData["error"] = "Could not register user";
-                RegisterVM regsiterVM = new RegisterVM()
-                {
-                    Roles = _roleManager.Roles.Select(x => new SelectListItem
-                    {
-                        Text = x.Name,
-                        Value = x.Name
-                    })
-                };
-
-                return View(regsiterVM);
+				registerVM.Roles = _roleManager.Roles.Select(x => new SelectListItem {
+						Text = x.Name,
+						Value = x.Name
+					});
+                return View(registerVM);
             }
             else
             {
@@ -120,8 +168,9 @@ namespace HotelBooking.Web.Controllers
 			var res=await _userManager.ConfirmEmailAsync(user, token);
 			if(res.Succeeded)
 			{
+				await _signInManager.SignInAsync(user, isPersistent: false);
 				TempData["success"] = "Email verfied. You can login now.";
-				return RedirectToAction("Login");
+				return RedirectToAction("Index","Home");
 			}
 			else
 			{
