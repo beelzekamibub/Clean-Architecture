@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HotelBooking.Web.Controllers
 {
-	public class AuthController : Controller
+	public class AccountController : Controller
 	{
 		private readonly IRepositoryService _repo;
 		private readonly UserManager<AppUser> _userManager;
@@ -17,7 +17,7 @@ namespace HotelBooking.Web.Controllers
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly IEmailService _emailService;
 
-		public AuthController(IRepositoryService repo, 
+		public AccountController(IRepositoryService repo, 
 			UserManager<AppUser> userManager, 
 			SignInManager<AppUser> signInManager, 
 			RoleManager<IdentityRole> roleManager,
@@ -30,6 +30,10 @@ namespace HotelBooking.Web.Controllers
 			_roleManager = roleManager;
 		}
 
+		public IActionResult AccessDenied()
+		{
+			return View();
+		}
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();

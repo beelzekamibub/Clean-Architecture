@@ -1,0 +1,30 @@
+﻿@inject SignInManager<AppUser> signInManager
+@inject RoleManager<IdentityRole> roleManger
+@using HotelBooking.Application.Utility
+
+<ul class="navbar-nav flex-grow-1">
+	<li class="nav-item">
+		<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+	</li>
+	@if (signInManager.IsSignedIn(User) && User.IsInRole(StaticDetails.RoleAdmin))
+	{
+		
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Villa Management
+			</a>
+			<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<li class="nav-item">
+					<a class="nav-link text-dark" asp-area="" asp-controller="Villa" asp-action="Index">Villa</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="Index">Villa Number</a>
+				</li>
+				<hr style="margin-top:0; margin-bottom:0;" />
+				<li class="nav-item">
+					<a class="nav-link text-dark" asp-area="" asp-controller="Amenity" asp-action="Index">Amenities</a>
+				</li>
+			</ul>
+		</li>
+	}
+</ul>

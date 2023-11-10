@@ -1,12 +1,14 @@
 ﻿using HotelBooking.Application.SharedInterfaces;
+using HotelBooking.Application.Utility;
 using HotelBooking.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
 namespace HotelBooking.Web.Controllers
 {
-    
-    public class VillaController : Controller
+	[Authorize(Roles = StaticDetails.RoleAdmin)]
+	public class VillaController : Controller
     {
         private readonly IRepositoryService _repo;
         private readonly IWebHostEnvironment _environment;

@@ -1,13 +1,16 @@
 ﻿using HotelBooking.Application.SharedInterfaces;
+using HotelBooking.Application.Utility;
 using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
 using HotelBooking.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Web.Controllers
 {
+	[Authorize(Roles =StaticDetails.RoleAdmin)]
 	public class VillaNumberController : Controller
 	{
 		
