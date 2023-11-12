@@ -88,9 +88,10 @@ namespace HotelBooking.Web.Controllers
                 return View(loginVM);
             }
         }
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(string returnUrl = null)
 		{
-			if(!await _roleManager.RoleExistsAsync(StaticDetails.RoleAdmin))
+			returnUrl = string.IsNullOrEmpty(returnUrl) ? Url.Content("~/") : returnUrl;
+			if (!await _roleManager.RoleExistsAsync(StaticDetails.RoleAdmin))
 				await _roleManager.CreateAsync(new IdentityRole(StaticDetails.RoleAdmin));
             if (!await _roleManager.RoleExistsAsync(StaticDetails.RoleCustomer))
                 await _roleManager.CreateAsync(new IdentityRole(StaticDetails.RoleCustomer));
@@ -103,7 +104,8 @@ namespace HotelBooking.Web.Controllers
 					Value = x.Name
 				})
 			};
-
+			if(!string.IsNullOrEmpty(returnUrl))
+				regsiterVM.RedirectUrl = returnUrl;
             return View(regsiterVM);
 		}
 		[HttpPost]
@@ -128,14 +130,14 @@ namespace HotelBooking.Web.Controllers
                 {
 					var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 					var Id = user.Id;
-                    var confirmationLink = Url.Action("ConfirmEmail","Auth",new { userId=Id,token=token},Request.Scheme);
+                    var confirmationLink = Url.Action("ConfirmEmail","Account",new { userId=Id,token=token,returnurl=registerVM.RedirectUrl},Request.Scheme);
 					await _emailService.SendEmail(confirmationLink,registerVM.Email);
 					if (!string.IsNullOrEmpty(registerVM.SelectedRole))
 						await _userManager.AddToRoleAsync(user, registerVM.SelectedRole);
 					else
 						await _userManager.AddToRoleAsync(user, StaticDetails.RoleCustomer);
 					TempData["success"] = "Registered please confirm your email, by clicking on the link emailed to you.";
-					return RedirectToAction("Login");
+					return RedirectToAction("Login", new {returnurl=registerVM.RedirectUrl});
                 }
 				foreach(var error in result.Errors)
 				{
@@ -172,14 +174,14 @@ namespace HotelBooking.Web.Controllers
 			var res=await _userManager.ConfirmEmailAsync(user, token);
 			if(res.Succeeded)
 			{
-				await _signInManager.SignInAsync(user, isPersistent: false);
+				//await _signInManager.SignInAsync(user, isPersistent: false);
 				TempData["success"] = "Email verfied. You can login now.";
-				return RedirectToAction("Index","Home");
+				return RedirectToAction("Index", "Home");
 			}
 			else
 			{
                 TempData["success"] = "Email confirmation failed. Cant register with this email.";
-                return RedirectToAction("Register");
+                return RedirectToAction("Index", "Home");
             }
 		}
     }

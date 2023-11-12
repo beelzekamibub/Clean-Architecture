@@ -31,6 +31,7 @@
 						<div class="col-md-12">
 							<section>
 								<form class="row" method="post">
+									<input hidden asp-for="RedirectUrl" class="form-check-input" />
 									<div asp-validation-summary="All"></div>
 									<div class="form-floating mb-3 col-md-6">
 										<input asp-for="Email" class="form-control" aria-required="true" />
