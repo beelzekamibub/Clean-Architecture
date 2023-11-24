@@ -9,6 +9,6 @@ namespace HotelBooking.Application.SharedInterfaces
 {
     public interface IEmailService
     {
-        Task SendEmail(string body, string To);
+        Task SendEmail(string subject,string body, string To);
     }
 }

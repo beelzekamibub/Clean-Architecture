@@ -34,6 +34,7 @@ namespace HotelBooking.Web.Controllers
 		{
 			return View();
 		}
+
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
@@ -51,21 +52,33 @@ namespace HotelBooking.Web.Controllers
 		}
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(loginVM.Email);
+				if (user == null)
+				{
+					ModelState.AddModelError("Email", "No such user");
+					return View(loginVM);
+				}
 				if(!user.EmailConfirmed)
 				{
 					TempData["error"] = "Email not confirmed cant login right now";
 					return View(loginVM);
 				}
-				var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password,loginVM.RemeberMe,lockoutOnFailure:false);
+                if (await _userManager.IsLockedOutAsync(user))
+                {
+                    ModelState.AddModelError(string.Empty, "Account locked out due to multiple failed login attempts. Try again later.");
+                    return View(loginVM);
+                }
+                var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password,loginVM.RemeberMe,lockoutOnFailure:true);
 
                 if (result.Succeeded)
                 {
-					if (string.IsNullOrEmpty(loginVM.RedirectUrl))
+                    await _userManager.ResetAccessFailedCountAsync(user);
+                    if (string.IsNullOrEmpty(loginVM.RedirectUrl))
 					{
 						return RedirectToAction("Index", "Home");
 					}
@@ -76,8 +89,17 @@ namespace HotelBooking.Web.Controllers
                 }
 				else
 				{
-					ModelState.AddModelError("", "Invalid login attempt.");
-				}
+                    if (result.IsLockedOut)
+                    {
+                        await _userManager.AccessFailedAsync(user);
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt. Account locked out. Try again later.");
+                        return View(loginVM);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    }
+                }
                
                 TempData["error"] = "Could not login";
                 return View(loginVM);
@@ -88,6 +110,63 @@ namespace HotelBooking.Web.Controllers
                 return View(loginVM);
             }
         }
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM forgotPasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(forgotPasswordViewModel.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("Email", "No User with this email address exists");
+                    return View(forgotPasswordViewModel);
+                }
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var reseturl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, Request.Scheme);
+                await _emailService.SendEmail("Reset your password", reseturl, forgotPasswordViewModel.Email);
+				TempData["Success"] = "Email sent";
+                return View(forgotPasswordViewModel);
+            }
+            ModelState.AddModelError("Email", "Incorrect email");
+            return View(forgotPasswordViewModel);
+        }
+        [HttpGet]
+        public IActionResult ResetPassword(string userId, string code)
+        {
+            if (code == null)
+                return View("Error");
+            ResetVM resetViewModel = new ResetVM { code = code, UserId = userId };
+            return View(resetViewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetVM resetViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(resetViewModel.UserId);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "User not found");
+                    return View(resetViewModel);
+                }
+                var result = await _userManager.ResetPasswordAsync(user, resetViewModel.code, resetViewModel.Password);
+
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                ModelState.AddModelError("Password", "Passwords do not satisfy criterion");
+                return View(resetViewModel);
+            }
+
+        }
+
         public async Task<IActionResult> Register(string returnUrl = null)
 		{
 			returnUrl = string.IsNullOrEmpty(returnUrl) ? Url.Content("~/") : returnUrl;
@@ -131,7 +210,7 @@ namespace HotelBooking.Web.Controllers
 					var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 					var Id = user.Id;
                     var confirmationLink = Url.Action("ConfirmEmail","Account",new { userId=Id,token=token,returnurl=registerVM.RedirectUrl},Request.Scheme);
-					await _emailService.SendEmail(confirmationLink,registerVM.Email);
+					await _emailService.SendEmail("Confirm your email",confirmationLink,registerVM.Email);
 					if (!string.IsNullOrEmpty(registerVM.SelectedRole))
 						await _userManager.AddToRoleAsync(user, registerVM.SelectedRole);
 					else
@@ -176,13 +255,13 @@ namespace HotelBooking.Web.Controllers
 			{
 				//await _signInManager.SignInAsync(user, isPersistent: false);
 				TempData["success"] = "Email verfied. You can login now.";
-				return RedirectToAction("Index", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			else
 			{
                 TempData["success"] = "Email confirmation failed. Cant register with this email.";
-                return RedirectToAction("Index", "Home");
-            }
+				return RedirectToAction("Register", "Account");
+			}
 		}
     }
 }

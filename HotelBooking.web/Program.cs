@@ -27,6 +27,9 @@ builder.Services.Configure<IdentityOptions>(opt =>
     opt.Password.RequireNonAlphanumeric = true;
     opt.Password.RequireDigit = true;
     opt.Password.RequireUppercase = true;
+    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+    opt.SignIn.RequireConfirmedAccount = true;
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
