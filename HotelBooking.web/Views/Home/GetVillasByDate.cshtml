@@ -49,7 +49,7 @@
 			</div>
 			<div class="col-4 col-md-2 pt-4 pr-2">
 				<div class="form-group">
-					<button type="submit" onclick="fnLoadVillasReactive()" class="btn btn-success btn-block" >
+					<button type="submit" onclick="fnLoadVillasReactive()" class="btn btn-success btn-block">
 						<i class="bi bi-search"></i>  &nbsp; Check Availability
 					</button>
 				</div>
@@ -68,15 +68,15 @@
 			console.log("spinner");
 			$('.loading').show();
 			var obj = {
-				CheckInDate:$("#CheckInDate").val(),
-				nights:$("#Nights").val()
+				CheckInDate: $("#CheckInDate").val(),
+				nights: $("#Nights").val()
 			};
 
 			$.ajax({
-				url:"@Url.Action("GetVillasByDateAjax","Home")",
-				data:obj,
-				type:"POST",
-				success: function (data){
+				url: "@Url.Action("GetVillasByDateAjax","Home")",
+				data: obj,
+				type: "POST",
+				success: function (data) {
 					$("#VillasList").empty();
 					$("#VillasList").html(data);
 					$('.loading').hide();

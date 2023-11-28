@@ -22,12 +22,12 @@ namespace HotelBooking.web.Controllers
             };
 			return View(homeVM);
         }
-        [HttpPost]
+        /*[HttpPost]
 		public async Task<IActionResult> Index(HomeVM homeVM)
 		{
             homeVM.Villas = await _repo.Villa.GetAllByFilter(includeJoinsOn: "Amenities");
 			return View(homeVM);
-		}
+		}*/
         [HttpPost]
         public async Task<IActionResult> GetVillasByDate(int nights, HomeVM model)
         {
@@ -44,7 +44,7 @@ namespace HotelBooking.web.Controllers
                 Nights= nights,
                 Villas = villas
             };
-            return View("Index",homeVM);
+            return View(homeVM);
 		}
 		[HttpPost]
 		public async Task<IActionResult> GetVillasByDateAjax(int nights, DateTime CheckInDate)
